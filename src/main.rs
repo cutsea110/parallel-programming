@@ -1,3 +1,12 @@
+use std::thread::spawn;
+
+fn hello() {
+    println!("Hello World!");
+}
+
 fn main() {
-    println!("Hello, world!");
+    spawn(hello).join();
+
+    let h = || println!("Hello World!");
+    spawn(h).join();
 }
