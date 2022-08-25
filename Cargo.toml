@@ -12,6 +12,5 @@ name = "pthreads"
 path = "src/lib.rs"
 
 [[bin]]
-name = "parallel"
-path = "src/main.rs"
-
+name = "chap2"
+path = "src/chap2.rs"
