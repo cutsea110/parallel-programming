@@ -1,5 +1,7 @@
-all: ex2211 ex2212
+all: ex2211 ex2212 cas
 
 ex2211: ex2211.c
 
 ex2212: ex2212.c
+
+cas: cas.c
