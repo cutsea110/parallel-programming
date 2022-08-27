@@ -15,17 +15,33 @@ void tas_release(volatile bool *p) {
   return __sync_lock_release(p);
 }
 
+// SpinLock
+void spinlock_aqcuire_naive(bool *lock) {
+  while (test_and_set(lock));
+}
+void spinlock_aqcuire(bool *lock) {
+  // TTAS
+  for (;;) {
+    while(*lock);
+    if (!test_and_set(lock))
+      break;
+  }
+}
+void spinlock_release(bool *lock) {
+  tas_release(lock);
+}
+
+
 bool lock = false; // 共有変数
 
 void some_func() {
- retry:
-  if (!test_and_set(&lock)) { // 検査とロック獲得
+  for (;;) {
+    spinlock_aqcuire(&lock); // ロック獲得
     printf("critical section\n");
-  } else {
-    goto retry;
+    spinlock_release(&lock); // ロック解放
   }
-  tas_release(&lock); // ロック解放
 }
+
 
 int main(int argc, char *argv[]) {
   some_func();
