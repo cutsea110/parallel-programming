@@ -1,4 +1,4 @@
-all: ex2211 ex2212 cas spinlock mutex
+all: ex2211 ex2212 cas spinlock mutex semaphore
 
 ex2211: ex2211.c
 
@@ -9,3 +9,5 @@ cas: cas.c
 spinlock: spinlock.c
 
 mutex: mutex.c
+
+semaphore: semaphore.c
