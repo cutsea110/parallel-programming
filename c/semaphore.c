@@ -1,6 +1,10 @@
+#include <pthread.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 
-#define NUM 10
+#define NUM 3
+#define NUM_THREADS 100
 
 void semaphore_aqcuire(volatile int *cnt) {
   for (;;) {
@@ -18,14 +22,36 @@ void semaphore_release(int *cnt) {
 
 int cnt = 0; // 共有変数
 
-void some_func() {
-  for (;;) {
-    semaphore_aqcuire(&cnt);
-    printf("some task\n");
-    semaphore_release(&cnt);
-  }
+void *some_func(void *arg) {
+  int id = (int)arg;
+  semaphore_aqcuire(&cnt);
+  printf("critical section [id = %d, cnt = %d]\n", id, cnt);
+  sleep(1);
+  semaphore_release(&cnt);
+
+  return arg;
 }
 
 int main(int argc, char *argv[]) {
-  some_func();
+  pthread_t v[NUM_THREADS];
+
+  for (int i = 0; i < NUM_THREADS; i++) {
+    if (pthread_create(&v[i], NULL, some_func, (void *)i) != 0) {
+      perror("pthread_create");
+      return -1;
+    }
+  }
+
+  for (int i = 0; i < NUM_THREADS; i++) {
+    char *ptr;
+    if (pthread_join(v[i], (void **)&ptr) == 0) {
+      int id = (int *)ptr;
+      printf("msg = %d\n", id);
+    } else {
+      perror("pthread_create");
+      return -1;
+    }
+  }
+
+  return 0;
 }
