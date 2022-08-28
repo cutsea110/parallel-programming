@@ -20,7 +20,10 @@ void semaphore_release(int *cnt) {
   __sync_fetch_and_sub(cnt, 1);
 }
 
-int cnt = 0; // 共有変数
+// 共有変数
+// NOTE: 保証されているのは NUM より多くのスレッドがクリティカルセクションには入らないこと
+//       cnt が NUM を超えることは semaphore_aqcuire の実装上ありえる
+int cnt = 0;
 
 void *some_func(void *arg) {
   int id = (int)arg;
